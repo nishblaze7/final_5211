@@ -171,6 +171,11 @@ with tab4:
     st.pyplot(fig)
 
 with tab5:
+    st.subheader("K-Means Regression")
+    if st.checkbox("Select to learn more about the following K-means regression"):
+        st.write("K-Nearest Neighbors Regression using the 'Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', and 'Research_Performance' variables to predict the 'Score' of a university.The slider allows you to choose a value of k (number of nearest neighbors to use in the regression) and see the resulting scatter plot of measured vs. predicted values. The black dashed line represents a perfect match between the measured and predicted values, and the blue dots represent the actual data points. The mean squared error (MSE) is also displayed on the plot.")
+                 
+
     X = df[['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']]
     y = df['Score']
 
