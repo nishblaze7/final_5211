@@ -32,7 +32,6 @@ with st.sidebar:
 
 #Read data
 df = pd.read_csv('Uni_records.csv', encoding='latin-1')
-st.write(df)
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(['Explanatory Analysis', 'Plots', 'Analysis','Predictive Modeling', 'Grid Search'])
 
@@ -53,5 +52,47 @@ with tab1:
     if st.checkbox("Summary"):
         st.write(df.describe())
 
+ 
+with tab2: 
+    st.subheader ("Data Viz")
+
+    if st.checkbox("Correlation Plot(Seaborn)"):
+        st.write(sns.heatmap(df.corr(),annot=True))
+        st.pyplot()
+
+    all_columns_names = df.columns.tolist()
+    type_of_plot = st.selectbox("Select Type of Plot",["bar", "area", "line","hist"])
+    selected_columns_names = st.multiselect("Select Columns to plot", all_columns_names)
+
+    if st.checkbox("Plot of Value counts"):
+        st.text("Value counts by target")
+    all_columns_names = df.columns.tolist()
+    primary_col = st.selectbox("Primary column to Groupby", all_columns_names)
+    selected_columns_names = st.multiselect("Select Columns", all_columns_names)
+    if st.button("Plot"):
+      st.text("Generated Plot")
+      if selected_columns_names:
+         vc_plot = df.groupby(primary_col)[selected_columns_names].count()
+      else:
+         vs_plot = df.iloc[:,1].value_counts()
+         st.write(vs_plot.plot(kind="bar"))
+         st.pyplot()
+    if st.button("Generate Plot"):
+        st.success("Generate custom plot of {} for {}".format(type_of_plot,selected_columns_names))
+
+    if type_of_plot == 'area':
+        cust_data = df[selected_columns_names]
+        st.area_chart(cust_data)
+    elif type_of_plot == 'bar':
+        cust_data = df[selected_columns_names]
+        st.bar_chart(cust_data)
+    elif type_of_plot == 'line':
+        cust_data = df[selected_columns_names]
+        st.line_chart(cust_data)
+    elif type_of_plot: 
+        cust_plot = df[selected_columns_names].plot(kind=type_of_plot)
+        st.write(cust_plot)
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
 
    
