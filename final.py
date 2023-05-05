@@ -124,3 +124,23 @@ with tab3:
     model = sm.OLS(y, X).fit()
 
     st.write(model.summary())
+    
+
+with tab4:
+    st.title('Decision Tree Regression')
+    variable_names = ['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']
+    selected_vars = st.multiselect('Select variables:', variable_names, default=variable_names)
+    X = df[selected_vars]
+    y = df['Score']
+    st.write('Select variables and evaluate a decision tree model.')
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    model = DecisionTreeRegressor()
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    st.write('Mean squared error:', mse)
+
+    st.write('Decision Tree:')
+    fig, ax = plt.subplots(figsize=(20, 10))
+    plot_tree(model, ax=ax, feature_names=X.columns, fontsize=10)
+    st.pyplot(fig)    
