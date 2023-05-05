@@ -14,6 +14,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.linear_model import LinearRegression
+
 
 
 
@@ -29,11 +33,12 @@ with st.sidebar:
   st.info("Select the dataset to learn more about it.")
   if st.checkbox("University Records"):
    st.write("The app allows users to explore and analyze a dataset of institution records and rankings. The dataset contains information about the institution's world rank, name, location, national rank, quality of education, alumni employment, quality of faculty, research performance, and score. Users can interact with the app to gain insights into the data by selecting different variables and filters. The app provides various features such as selecting specific institutions based on their national rank, filtering by location, and sorting by different rankings.")
-
+  
 #Read data
 df = pd.read_csv('Uni_records.csv', encoding='latin-1')
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(['Explanatory Analysis', 'Plots', 'Analysis','Predictive Modeling', 'Grid Search'])
+
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(['Explanatory Analysis', 'Plots', 'Analysis','Predictive Modeling', 'Grid Search','Comparing models'])
 
 with tab1:
     st.subheader("Look at the dataset")
@@ -52,7 +57,6 @@ with tab1:
     if st.checkbox("Summary"):
         st.write(df.describe())
 
- 
 with tab2: 
     st.subheader ("Data Viz")
 
@@ -95,8 +99,23 @@ with tab2:
         st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
 
-   
 with tab3:    
+    if st.checkbox("Show Feature Importance"):
+        # select the independent variables and dependent variable
+        X = df[['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']]
+        y = df['Score']
+
+        model = RandomForestRegressor()
+        model.fit(X, y)
+
+        importances = model.feature_importances_
+
+        fig, ax = plt.subplots()
+        ax.bar(X.columns, importances)
+        plt.xticks(rotation=45)
+        ax.set_title('Feature Importances')
+        st.pyplot(fig)
+
     st.subheader('Top Institutions By Country')
     country = st.selectbox('Select a country', df['Location'].unique())
     filtered_df = df[df['Location'] == country]
@@ -110,7 +129,10 @@ with tab3:
         st.write(f"Top {n} institutions in {country} with high world rankings:")
         st.table(top_institutions[['Institution', 'World Rank']])
 
-    st.subheader('Regression')
+        st.subheader('Regression')
+    if st.checkbox("Select to learn more about the following Regression"):
+        st.write("Please adjust your independent variables, which will be then used to create the X variable, which represents the independent variables in the linear regression analysis. The y variable [Score] represents the dependent variable. The model summary provides a summary of the regression analysis results. This includes information on the coefficients of the independent variables, which indicate how strongly each independent variable is associated with the dependent variable. If the R-squared value is close to 1, it means that the independent variables are very good at predicting the dependent variable. If the R-squared value is close to 0, it means that the independent variables are not very good at predicting the dependent variable.")
+
 
     independent_vars = ['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']
     selected_vars = st.multiselect('Select independent variables', independent_vars, default=independent_vars)
@@ -124,10 +146,13 @@ with tab3:
     model = sm.OLS(y, X).fit()
 
     st.write(model.summary())
-    
 
 with tab4:
     st.title('Decision Tree Regression')
+    if st.checkbox("Select to learn more about the following Decision Tree Analysis"):
+        st.write("This code is performing a decision tree regression analysis on a dataset with four independent variables (Quality_of_Education, Alumni_Employment, Quality_of_Faculty, and Research_Performance) and one dependent variable (Score). The model will split the data into training and testing sets. The decision tree regression model is then fit to the training data. This will generate predicted values for the test data, and the mean squared error, which is used to calculate the mean squared error of the predicted values compared to the actual values. The graphical representation of the decision tree can also help to visualize the decision-making process of the model.")
+
+
     variable_names = ['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']
     selected_vars = st.multiselect('Select variables:', variable_names, default=variable_names)
     X = df[selected_vars]
@@ -143,8 +168,8 @@ with tab4:
     st.write('Decision Tree:')
     fig, ax = plt.subplots(figsize=(20, 10))
     plot_tree(model, ax=ax, feature_names=X.columns, fontsize=10)
-    st.pyplot(fig)    
-    
+    st.pyplot(fig)
+
 with tab5:
     X = df[['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']]
     y = df['Score']
@@ -165,4 +190,43 @@ with tab5:
     ax.set_ylabel('Predicted')
     ax.set_title(f'K-Nearest Neighbors Regression (k={k})\nMSE: {mse:.2f}')
     st.pyplot(fig)
-    
+
+with tab6:
+    X = df[['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']]
+    y = df['Score']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# create and fit a linear regression model
+    linear_reg = LinearRegression()
+    linear_reg.fit(X_train, y_train)
+    linear_reg_y_pred = linear_reg.predict(X_test)
+
+# create and fit a decision tree regression model
+    dt_reg = DecisionTreeRegressor()
+    dt_reg.fit(X_train, y_train)
+    dt_reg_y_pred = dt_reg.predict(X_test)
+
+# create and fit a random forest regression model
+    rf_reg = RandomForestRegressor()
+    rf_reg.fit(X_train, y_train)
+    rf_reg_y_pred = rf_reg.predict(X_test)
+
+# calculate and print the evaluation metrics for each model
+    linear_reg_mse = mean_squared_error(y_test, linear_reg_y_pred)
+    linear_reg_r2 = r2_score(y_test, linear_reg_y_pred)
+
+    dt_reg_mse = mean_squared_error(y_test, dt_reg_y_pred)
+    dt_reg_r2 = r2_score(y_test, dt_reg_y_pred)
+
+    rf_reg_mse = mean_squared_error(y_test, rf_reg_y_pred)
+    rf_reg_r2 = r2_score(y_test, rf_reg_y_pred)
+
+    results = pd.DataFrame({
+        'Model': ['Linear Regression', 'Decision Tree', 'Random Forest'],
+        'MSE': [linear_reg_mse, dt_reg_mse, rf_reg_mse],
+        'R-squared': [linear_reg_r2, dt_reg_r2, rf_reg_r2]})
+
+# display the results in a table using streamlit
+    st.write('Regression Models Evaluation Metrics:')
+    st.write(results)
