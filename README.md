@@ -3,6 +3,8 @@ This app was designed for Visual Analytics class in the Data Science Master's pr
 
 This App is developed to use a University Rankings dataset and analyze the current standings. 
 
+Link to Streamlit App: https://nishblaze7-final-5211-final-kbxndy.streamlit.app/
+
 # Data
 Data was taken from Data.world. It was provided by the U.S. News & World 2017 Repor to help students worldwide compare the academic quality of more than 1,800 U.S.-based schools. 
 
