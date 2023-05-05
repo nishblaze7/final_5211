@@ -144,3 +144,25 @@ with tab4:
     fig, ax = plt.subplots(figsize=(20, 10))
     plot_tree(model, ax=ax, feature_names=X.columns, fontsize=10)
     st.pyplot(fig)    
+    
+with tab5:
+    X = df[['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']]
+    y = df['Score']
+
+    k_range = range(1, 21)
+    k = st.slider('Select a value of k:', min_value=1, max_value=20)
+
+    knn = KNeighborsRegressor(n_neighbors=k)
+    knn.fit(X, y)
+    y_pred = knn.predict(X)
+
+    mse = mean_squared_error(y, y_pred)
+
+    fig, ax = plt.subplots()
+    ax.scatter(y, y_pred)
+    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+    ax.set_xlabel('Measured')
+    ax.set_ylabel('Predicted')
+    ax.set_title(f'K-Nearest Neighbors Regression (k={k})\nMSE: {mse:.2f}')
+    st.pyplot(fig)
+    
