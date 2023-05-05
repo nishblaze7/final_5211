@@ -31,7 +31,7 @@ with st.sidebar:
    st.write("The app allows users to explore and analyze a dataset of institution records and rankings. The dataset contains information about the institution's world rank, name, location, national rank, quality of education, alumni employment, quality of faculty, research performance, and score. Users can interact with the app to gain insights into the data by selecting different variables and filters. The app provides various features such as selecting specific institutions based on their national rank, filtering by location, and sorting by different rankings.")
 
 #Read data
-df = pd.read_csv('Uni_records.csv')
+df = pd.read_csv('Uni_records.csv', encoding='latin-1')
 st.write(df)
 
 
