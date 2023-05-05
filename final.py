@@ -34,5 +34,24 @@ with st.sidebar:
 df = pd.read_csv('Uni_records.csv', encoding='latin-1')
 st.write(df)
 
+tab1, tab2, tab3, tab4, tab5 = st.tabs(['Explanatory Analysis', 'Plots', 'Analysis','Predictive Modeling', 'Grid Search'])
+
+with tab1:
+    st.subheader("Look at the dataset")
+    if st.checkbox("Show dataset"):
+        number = st.number_input("Number of rows to view",5,100)
+        st.dataframe(df.head(number))
+
+    st.subheader("Filter Columns to Compare and Contrast")
+    if st.checkbox("Select Columns to Show"):
+        all_columns = df.columns.tolist()
+        selected_columns = st.multiselect("Select", all_columns)
+        new_df = df[selected_columns]
+        st.dataframe(new_df)
+
+    st.subheader("Look at the Summary")
+    if st.checkbox("Summary"):
+        st.write(df.describe())
+
 
    
