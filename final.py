@@ -96,3 +96,31 @@ with tab2:
         st.set_option('deprecation.showPyplotGlobalUse', False)
 
    
+with tab3:    
+    st.subheader('Top Institutions By Country')
+    country = st.selectbox('Select a country', df['Location'].unique())
+    filtered_df = df[df['Location'] == country]
+
+    if len(filtered_df) == 0:
+        st.write(f"No data available for {country}. Please select another country.")
+    else:
+        n = 10  # Number of institutions to display
+        top_institutions = filtered_df.sort_values(by='World Rank', ascending=True).head(n)
+
+        st.write(f"Top {n} institutions in {country} with high world rankings:")
+        st.table(top_institutions[['Institution', 'World Rank']])
+
+    st.subheader('Regression')
+
+    independent_vars = ['Quality_of_Education', 'Alumni_Employment', 'Quality_of_Faculty', 'Research_Performance']
+    selected_vars = st.multiselect('Select independent variables', independent_vars, default=independent_vars)
+    dependent_var = 'Score'
+
+    selected_cols = selected_vars + [dependent_var]
+    data = df[selected_cols]
+
+    X = sm.add_constant(data[selected_vars])
+    y = data[dependent_var]
+    model = sm.OLS(y, X).fit()
+
+    st.write(model.summary())
