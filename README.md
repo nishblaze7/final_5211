@@ -1,7 +1,7 @@
 # University Rankings Analysis
 This app was designed for Visual Analytics class in the Data Science Master's program at University of North Carolina. 
 
-This App is developed to use a University Rankings dataset and analyze what factors go into being one of the top universities. 
+This App is developed to use a University Rankings dataset and analyze what factors are considered for being one of the top universities. 
 
 Link to Streamlit App: https://nishblaze7-final-5211-final-kbxndy.streamlit.app/
 
